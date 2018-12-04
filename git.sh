@@ -34,6 +34,16 @@ function valid_input {
 	fi
 }
 
+function prompt_user {
+	echo "$1"
+	select answer in "Yes" "No"; do
+	    case $answer in
+	        Yes ) return 1;;
+	        No ) return 0;;
+	    esac
+	done
+}
+
 function validate_action {
 	ACTION_SPECIFIED="${CMD_ARGS[0]}"
 	(case $ACTION_SPECIFIED in
@@ -50,7 +60,8 @@ function validate_action {
 }
 
 function fast_push {
-	echo "Inside fast push"
+	git status
+	prompt_user "Continue to push?" "Yes" "No" 
 	git add -A
 	git commit -m "${CMD_ARGS[1]}"
 	if [ "$PASSED_ARGS_LENGTH" -eq 3 ]; then
