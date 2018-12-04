@@ -35,7 +35,7 @@ function valid_input {
 }
 
 function prompt_user {
-	echo "$1"
+	echo -e "$1"
 	select answer in "$2" "$3"; do
 	    case $answer in
 	        Yes ) return 1;;
@@ -60,14 +60,19 @@ function validate_action {
 }
 
 function fast_push {
+	echo -e "${BCyan}Executing ${BYellow}git status${Color_Off}";
 	git status
-	prompt_user "Continue to push?" "Yes" "No" 
-	git add -A
-	git commit -m "${CMD_ARGS[1]}"
-	if [ "$PASSED_ARGS_LENGTH" -eq 3 ]; then
-		git push origin "${CMD_ARGS[2]}"
+	prompt_user "${BCyan}Continue to commit and push?${BYellow}" "Yes" "No" 
+	if [[ "$?" -eq 1 ]]; then
+		git add -A
+		git commit -m "${CMD_ARGS[1]}"
+		if [ "$PASSED_ARGS_LENGTH" -eq 3 ]; then
+			git push origin "${CMD_ARGS[2]}"
+		else
+			git push
+		fi
 	else
-		git push
+		echo "Fast push aborted!"
 	fi
 }
 
@@ -87,9 +92,8 @@ if [[ "$?" -eq 1 ]]; then
 	# echo $PASSED_ARGS_LENGTH
 	validate_action 
 	if [[ "$?" -eq 1 ]]; then
-		echo "${CMD_ARGS[1]}"
+		# echo "${CMD_ARGS[1]}"
 		execute_action
-		echo "done"
 	fi
 fi
 
