@@ -9,14 +9,24 @@
 #	Get passed arguments length
 PASSED_ARGS_LENGTH=$#
 
-
-function execute {
+#	Check if valid no of arguments passed
+function valid_input {
 	if [ "$PASSED_ARGS_LENGTH" -eq 0 ]; then
 		echo "No action specified"
+		return 0
 	else
-		echo $PASSED_ARGS_LENGTH
-	fi 
-	
+		return 1
+	fi
 }
 
-execute
+#	Execution start point
+function start_execution {
+	valid_input
+	if [[ "$?" -eq 1 ]]; then
+		echo $PASSED_ARGS_LENGTH
+		
+	fi
+}
+
+#	Start execution
+start_execution
