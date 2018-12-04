@@ -19,14 +19,31 @@ function valid_input {
 	fi
 }
 
-#	Execution start point
-function start_execution {
-	valid_input
-	if [[ "$?" -eq 1 ]]; then
-		echo $PASSED_ARGS_LENGTH
-		
-	fi
+function validate_action {
+	ACTION_SPECIFIED="$1"
+	(case $ACTION_SPECIFIED in
+		"--fp") echo "Fast Push"
+				if [[ "$PASSED_ARGS_LENGTH" -eq 3 ]]; then
+					echo "Right"
+				else
+					echo "Wrong"
+				fi;;
+				
+		"--fpp") echo "Fast push & pull";;
+		*) echo "Wrong";;
+	esac)
+
+	return 1
 }
 
-#	Start execution
-start_execution
+
+#	Execution start point
+valid_input
+if [[ "$?" -eq 1 ]]; then
+	# echo $PASSED_ARGS_LENGTH
+	ACTION_SPECIFIED=$1;
+	validate_action "$ACTION_SPECIFIED"
+	if [[ "$?" -eq 1 ]]; then
+		echo "done"
+	fi
+fi
