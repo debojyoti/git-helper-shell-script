@@ -36,7 +36,7 @@ function valid_input {
 
 function prompt_user {
 	echo "$1"
-	select answer in "Yes" "No"; do
+	select answer in "$2" "$3"; do
 	    case $answer in
 	        Yes ) return 1;;
 	        No ) return 0;;
