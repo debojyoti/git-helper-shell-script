@@ -53,7 +53,11 @@ function fast_push {
 	echo "Inside fast push"
 	git add -A
 	git commit -m "${CMD_ARGS[1]}"
-	git push
+	if [ "$PASSED_ARGS_LENGTH" -eq 3 ]; then
+		git push origin "${CMD_ARGS[2]}"
+	else
+		git push
+	fi
 }
 
 function execute_action {
