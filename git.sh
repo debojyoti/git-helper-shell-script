@@ -27,7 +27,7 @@ CMD_ARGS=("$@")
 #	Check if valid no of arguments passed
 function valid_input {
 	if [ "$PASSED_ARGS_LENGTH" -eq 0 ]; then
-		echo "No action specified"
+		echo -e "${BRed}Error: No action specified"
 		return 0
 	else
 		return 1
@@ -40,7 +40,7 @@ function validate_action {
 		"-fp") if [[ "$PASSED_ARGS_LENGTH" -ge 2 ]]; then
 					return 1
 				else
-					echo -e "${BRed}Error: Fast Push requires minimum 1 additional argument \n${BCyan}Try: ./git.sh --fp <Commit Message> <Push branch name> \n${BCyan}Or try: ./git.sh --fp <Commit Message> ${BYellow}(Current branch will be used)"
+					echo -e "${BRed}Error: Fast Push requires minimum 1 additional argument \n${BCyan}Try: ${BYellow}./git.sh --fp <Commit Message> <Push branch name> \n${BCyan}Or try: ${BYellow}./git.sh --fp <Commit Message> ${BCyan}(Current branch will be used)"
 					return 0
 				fi;;
 
