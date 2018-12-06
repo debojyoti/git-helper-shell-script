@@ -1,13 +1,6 @@
 #!/bin/bash
 
 
-#	Fast Push: > ./git.sh -fps "Commit message" "Push branch name"
-#	
-#	Fast Pull & Push: > ./git.sh -fpp "Pull banch name" "Commit message" "Push branch name"
-#	
-#	Interactive-Pull: > ./git.sh -ipl	
-
-
 
 
 #	Color declarations
