@@ -1,9 +1,11 @@
 #!/bin/bash
 
 
-#	Fast Push: > ./git -fp "Commit message" "Push branch name"
+#	Fast Push: > ./git.sh -fps "Commit message" "Push branch name"
 #	
-#	Fast Pull & Push: > ./git -fpp "Pull banch name" "Commit message" "Push branch name"
+#	Fast Pull & Push: > ./git.sh -fpp "Pull banch name" "Commit message" "Push branch name"
+#	
+#	Interactive-Pull: > ./git.sh -ipl	
 
 
 
@@ -16,6 +18,9 @@ BRed='\033[1;31m'
 BCyan='\033[1;36m'
 BYellow='\033[1;33m'
 
+#	Font weights
+bold=$(tput bold)
+normal=$(tput sgr0)
 
 
 #	Get passed arguments length
@@ -47,7 +52,7 @@ function prompt_user {
 function validate_action {
 	ACTION_SPECIFIED="${CMD_ARGS[0]}"
 	(case $ACTION_SPECIFIED in
-		"-fp") if [[ "$PASSED_ARGS_LENGTH" -ge 2 ]]; then
+		"-fps") if [[ "$PASSED_ARGS_LENGTH" -ge 2 ]]; then
 					return 1
 				else
 					echo -e "${BRed}Error: Fast Push requires minimum 1 additional argument \n${BCyan}Try: ${BYellow}./git.sh --fp <Commit Message> <Push branch name> \n${BCyan}Or try: ${BYellow}./git.sh --fp <Commit Message> ${BCyan}(Current branch will be used)"
@@ -55,6 +60,8 @@ function validate_action {
 				fi;;
 
 		"-fpp") echo "Fast push & pull";;
+		"-ipl") return 1;;
+		"-help") return 1;;
 		*) echo -e "${BRed}Error: ${CMD_ARGS[0]} is not a valid action \n${BCyan}Try: ${BYellow}./git.sh --help ${BCyan}to get the lists of valid actions";;
 	esac)
 }
@@ -67,6 +74,7 @@ function fast_push {
 		git add -A
 		git commit -m "${CMD_ARGS[1]}"
 		if [ "$PASSED_ARGS_LENGTH" -eq 3 ]; then
+			git checkout -b "${CMD_ARGS[2]}"
 			git push origin "${CMD_ARGS[2]}"
 		else
 			git push
@@ -76,12 +84,40 @@ function fast_push {
 	fi
 }
 
+function interactive_pull {
+	#	Show current branch 
+	echo -e "${BCyan}Current Branch: ${BYellow}";
+	git branch
+
+	#	Show remote commmit graph
+	echo -e "\n${BCyan}Press any key to show commit graph: ${BYellow}";
+	read ANY_KEY_INPUT
+	echo -e "\n${BCyan}Showing commit graph${Color_Off}${bold}"
+	git log --graph --oneline --decorate --all
+
+	#	Prompt for pull branch name
+	echo -e "\n${BCyan}Enter branch name to pull or press ctrl+c to exit${BYellow}"
+	read PULL_BRANCH_NAME
+
+	#	Pull the branch
+	echo -e "\n${BCyan}Pulling branch: ${BYellow}${PULL_BRANCH_NAME}${Color_Off}${bold}"
+	git pull origin "${PULL_BRANCH_NAME}" 
+}
+
+function show_all_allowed_actions {
+	echo -e "\n\n${BCyan}List of allowed actions:-"
+	echo -e "> ${BYellow}./git.sh -fps \"commit message\" \"pull branch name\" \t: ${Color_Off}${bold}Fast push"
+	echo -e "${BCyan}> ${BYellow}./git.sh -ipl \t\t\t\t\t: ${Color_Off}${bold}Interactive-Pull\n"
+}
+
 function execute_action {
 	ACTION_SPECIFIED="${CMD_ARGS[0]}"
 	(case $ACTION_SPECIFIED in
-		"-fp") fast_push;;
+		"-fps") fast_push;;
+		"-ipl") interactive_pull;;
 		"-fpp") echo "Fast push & pull";;
-		*) echo -e "${BRed}Error: ${CMD_ARGS[0]} is not a valid action \n${BCyan}Try: ${BYellow}./git.sh --help ${BCyan}to get the lists of valid actions";;
+		"-help") show_all_allowed_actions;;
+		*) echo -e "${BRed}Error: ${CMD_ARGS[0]} is not a valid action \n${BCyan}Try: ${BYellow}./git.sh -help ${BCyan}to get the lists of valid actions";;
 	esac)
 }
 
