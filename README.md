@@ -5,7 +5,7 @@ Shell script to perform common git operations with less typings
 ## Installation
 Place the  `git.sh` file as a sibling of `.git` directory in your project
 
-> For permission related issues, give it execution permission by running `sudo chomod +x git.sh`
+> For permission related issues, give it execution permission by running `sudo chmod +x git.sh`
 
 ## Usage
 
